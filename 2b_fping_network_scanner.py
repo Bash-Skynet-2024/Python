@@ -16,7 +16,7 @@ def get_arguments():
     return options
 
 def scan_ip(start_range, end_range):
-    result = subprocess.run(["fping", "-a", "-g", start_range, end_range, "2>/dev/null"], capture_output=True, text=True)
+    result = subprocess.run(["sudo", "fping", "-a", "-g", start_range, end_range, "2>/dev/null"], capture_output=True, text=True)
 
 
 def get_mac_addresses():
