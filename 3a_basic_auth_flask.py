@@ -1,4 +1,4 @@
-from flask import Flask, session, url_for, make_response
+from flask import Flask, session, request, url_for, make_response
 from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
@@ -20,6 +20,28 @@ def verify_password(username, password):
         session['username'] = username  # Store the username in session
         return username
     return None
+# Define a route for user signup
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    index_url = url_for('index')
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if username in users:
+            return "Username already exists. Please choose a different username."
+
+        # Store the new user's credentials
+        users[username] = password
+        return (f'Signup successful! home page : <a href=\'{index_url}\'>home page</a>')
+    return '''
+        <form method="post">
+            Username: <input type="text" name="username" required><br>
+            Password: <input type="password" name="password" required><br>
+            <input type="submit" value="Sign Up">
+        </form>
+    '''
+
 
 # Error handler for unauthorized access
 @auth.error_handler
@@ -31,7 +53,9 @@ def unauthorized():
 def index():
     # Dynamically generate the URL for the /protected route
     protected_url = url_for('protected')
-    return f"Welcome to the homepage! Please navigate to <a href='{protected_url}'>protected</a> for authentication."
+    signup_url = url_for('signup')
+    return (f'Welcome to the homepage! Please navigate to <a href=\'{signup_url}\'>sign up </a> to sign up.'
+            f' login page : <a href=\'{protected_url}\'> protected page</a>')
 
 # Define a protected route that requires authentication
 @app.route('/protected')
